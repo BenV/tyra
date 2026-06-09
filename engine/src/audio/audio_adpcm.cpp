@@ -15,7 +15,11 @@
 #include <kernel.h>
 #include <cstdlib>
 #include <audsrv.h>
+#include <malloc.h>
+#include <memory>
 #include "thread/threading.hpp"
+
+using std::unique_ptr;
 
 namespace Tyra {
 
@@ -38,9 +42,12 @@ audsrv_adpcm_t* AudioAdpcm::load(const char* t_path) {
   FILE* file = fopen(t_path, "rb");
   fseek(file, 0, SEEK_END);
   u32 adpcmFileSize = ftell(file);
-  u8 data[adpcmFileSize];
+  u32 paddedSize = (adpcmFileSize + 15) & ~15;
+  unique_ptr<u8, decltype(&std::free)> data(static_cast<u8*>(memalign(64, paddedSize)), &std::free);
+  TYRA_ASSERT(data != nullptr, "Failed to allocate memory for ADPCM data");
   rewind(file);
-  fread(data, sizeof(u8), adpcmFileSize, file);
+  fread(data.get(), sizeof(u8), adpcmFileSize, file);
+  memset(data.get() + adpcmFileSize, 0, paddedSize - adpcmFileSize);
   auto* result = new audsrv_adpcm_t();
   result->size = 0;
   result->buffer = 0;
@@ -48,7 +55,8 @@ audsrv_adpcm_t* AudioAdpcm::load(const char* t_path) {
   result->pitch = 0;
   result->channels = 0;
 
-  if (audsrv_load_adpcm(result, data, adpcmFileSize)) {
+  SyncDCache(data.get(), data.get() + paddedSize);
+  if (audsrv_load_adpcm(result, data.get(), paddedSize)) {
     TYRA_ERROR("AUDSRV returned error string: ", audsrv_get_error_string());
   }
 
