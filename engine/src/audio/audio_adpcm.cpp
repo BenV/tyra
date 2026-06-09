@@ -14,6 +14,7 @@
 #include <malloc.h>
 #include <kernel.h>
 #include <cstdlib>
+#include <cstring>
 #include <audsrv.h>
 #include <malloc.h>
 #include <memory>
