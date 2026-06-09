@@ -64,6 +64,11 @@ AdpcmResult AudioAdpcm::tryPlay(audsrv_adpcm_t* t_adpcm) {
   return tryPlay(t_adpcm, -1);
 }
 
+AdpcmResult AudioAdpcm::tryPlay(audsrv_adpcm_t* t_adpcm, const s8& t_ch) {
+  s8 ch = t_ch;
+  return tryPlay(t_adpcm, ch);
+}
+
 AdpcmResult AudioAdpcm::tryPlay(audsrv_adpcm_t* t_adpcm, s8& t_ch) {
   int res = audsrv_ch_play_adpcm(t_ch, t_adpcm);
   if (res >= 0) {
@@ -80,7 +85,14 @@ AdpcmResult AudioAdpcm::tryPlay(audsrv_adpcm_t* t_adpcm, s8& t_ch) {
   }
 }
 
-void AudioAdpcm::playWait(audsrv_adpcm_t* t_adpcm) { playWait(t_adpcm, -1); }
+void AudioAdpcm::playWait(audsrv_adpcm_t* t_adpcm) { 
+  playWait(t_adpcm, -1); 
+}
+
+void AudioAdpcm::playWait(audsrv_adpcm_t* t_adpcm, const s8& t_ch) {
+  s8 ch = t_ch;
+  return playWait(t_adpcm, ch);
+}
 
 void AudioAdpcm::playWait(audsrv_adpcm_t* t_adpcm, s8& t_ch) {
   int res = tryPlay(t_adpcm, t_ch);
