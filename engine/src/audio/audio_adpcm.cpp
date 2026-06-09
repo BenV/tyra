@@ -64,9 +64,10 @@ AdpcmResult AudioAdpcm::tryPlay(audsrv_adpcm_t* t_adpcm) {
   return tryPlay(t_adpcm, -1);
 }
 
-AdpcmResult AudioAdpcm::tryPlay(audsrv_adpcm_t* t_adpcm, const s8& t_ch) {
+AdpcmResult AudioAdpcm::tryPlay(audsrv_adpcm_t* t_adpcm, s8& t_ch) {
   int res = audsrv_ch_play_adpcm(t_ch, t_adpcm);
   if (res >= 0) {
+    t_ch = res;
     return AdpcmResult::ADPCM_OK;
   } else if (res == -AUDSRV_ERR_NO_MORE_CHANNELS) {
     if (t_ch < 0) {
@@ -81,7 +82,7 @@ AdpcmResult AudioAdpcm::tryPlay(audsrv_adpcm_t* t_adpcm, const s8& t_ch) {
 
 void AudioAdpcm::playWait(audsrv_adpcm_t* t_adpcm) { playWait(t_adpcm, -1); }
 
-void AudioAdpcm::playWait(audsrv_adpcm_t* t_adpcm, const s8& t_ch) {
+void AudioAdpcm::playWait(audsrv_adpcm_t* t_adpcm, s8& t_ch) {
   int res = tryPlay(t_adpcm, t_ch);
 
   while (res == AdpcmResult::ADPCM_NO_FREE_CHANNELS ||

@@ -47,19 +47,19 @@ class AudioAdpcm {
   /**
    * Try play ADPCM sample if channel(s) is not occupied.
    * @param t_adpcm ADPCM data, created by load();
-   * @param t_ch Channel (0-23). Type -1 for use any free channel.
+   * @param t_ch Channel (0-23). Type -1 for use any free channel. Will be set to the channel used on success.  
    */
   AdpcmResult tryPlay(audsrv_adpcm_t* t_adpcm);
-  AdpcmResult tryPlay(audsrv_adpcm_t* t_adpcm, const s8& t_ch);
+  AdpcmResult tryPlay(audsrv_adpcm_t* t_adpcm, s8& t_ch);
 
   /**
    * Play ADPCM sample, if channel is occupied, wait for it.
    * If not used properly, can hugely reduce performance.
    * @param t_adpcm ADPCM data, created by load();
-   * @param t_ch Channel (0-23). Type -1 for use any free channel.
+   * @param t_ch Channel (0-23). Type -1 for use any free channel, Will be set to the channel used on success. 
    */
   void playWait(audsrv_adpcm_t* t_adpcm);
-  void playWait(audsrv_adpcm_t* t_adpcm, const s8& t_ch);
+  void playWait(audsrv_adpcm_t* t_adpcm, s8& t_ch);
 
   /**
    * Set ADPCM volume.
