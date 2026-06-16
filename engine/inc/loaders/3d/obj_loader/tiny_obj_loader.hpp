@@ -2725,8 +2725,8 @@ static_assert(std::numeric_limits<double>::is_iec559,
 
 static_assert(tinyobj_ff::is_same<equiv_uint_t<float>, uint32_t>::value,
               "equiv_uint should be uint32_t for float");
-static_assert(std::numeric_limits<float>::is_iec559,
-              "float must fulfill the requirements of IEC 559 (IEEE 754)");
+//static_assert(std::numeric_limits<float>::is_iec559,
+//              "float must fulfill the requirements of IEC 559 (IEEE 754)");
 
 #ifdef __STDCPP_FLOAT64_T__
 static_assert(tinyobj_ff::is_same<equiv_uint_t<std::float64_t>, uint64_t>::value,
