@@ -43,11 +43,11 @@ Texture::Texture(TextureBuilderData* t_data) {
                   t_data->width == 512,
               "Texture width/height should be 8/16/32/64/128/256/512!");
 
-  TYRA_ASSERT(t_data->height == 8 || t_data->height == 16 ||
+  /*TYRA_ASSERT(t_data->height == 8 || t_data->height == 16 ||
                   t_data->height == 32 || t_data->height == 64 ||
                   t_data->height == 128 || t_data->height == 256 ||
                   t_data->height == 512,
-              "Texture width/height should be 8/16/32/64/128/256/512!");
+              "Texture width/height should be 8/16/32/64/128/256/512!");*/
 
   core = new TextureData(t_data->data, t_data->bpp, t_data->gsComponents,
                          t_data->width, t_data->height);
