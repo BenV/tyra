@@ -37,6 +37,60 @@ std::unique_ptr<MeshBuilderData> ObjLoader::load(
   return load(fullpath.c_str(), options);
 }
 
+std::unique_ptr<MeshBuilderData> ObjLoader::loadFromString(
+    const std::vector<std::string>& obj, const std::string& mtl,
+    const ObjLoaderOptions& options) {
+  auto result = std::make_unique<MeshBuilderData>();
+
+  tinyobj::ObjReaderConfig readerConfig;
+  readerConfig.triangulate =
+      options.triangulate && options.animation.count == 1;
+  readerConfig.triangulation_method =
+      options.animation.count == 1 ? "earcut" : "simple";
+
+  for (auto i = 1; i <= options.animation.count; i++) {
+    const std::string& objString = obj[i - 1];
+    tinyobj::ObjReader reader;
+
+    if (!reader.ParseFromString(objString, mtl, readerConfig)) {
+      if (!reader.Error().empty()) {
+        TYRA_TRAP("TinyObjLoader: ", reader.Error());
+      }
+      TYRA_TRAP("Unknown TinyObjLoader error!");
+    }
+
+    if (!reader.Warning().empty()) {
+      TYRA_WARN("TinyObjReader: ", reader.Warning());
+    }
+
+    auto& attrib = reader.GetAttrib();
+    auto& shapes = reader.GetShapes();
+    auto& materials = reader.GetMaterials();
+
+    TYRA_ASSERT(
+        materials.size() > 0,
+        "No material data found! Please add .mtl file(s) and assign them via "
+        "mtlib in obj file");
+
+    if (i == 1) {
+      auto scanResult = scan(shapes, materials);
+      addOutputMaterialsAndFrames(result.get(), attrib, shapes, materials,
+                                  options.animation.count, scanResult);
+    }
+
+    importFrame(result.get(), attrib, shapes, materials, i - 1, options.scale,
+                options.flipUVs, options.animation.count);
+  }
+
+  return result;
+}
+
+std::unique_ptr<MeshBuilderData> ObjLoader::loadFromString(
+    const std::string& obj, const std::string& mtl,
+    const ObjLoaderOptions& options) {
+  return loadFromString(std::vector<std::string>{obj}, mtl, options);
+}
+
 std::unique_ptr<MeshBuilderData> ObjLoader::load(
     const char* fullpath, const ObjLoaderOptions& options) {
   std::string path = fullpath;
@@ -49,7 +103,8 @@ std::unique_ptr<MeshBuilderData> ObjLoader::load(
   auto result = std::make_unique<MeshBuilderData>();
 
   tinyobj::ObjReaderConfig readerConfig;
-  readerConfig.triangulate = options.animation.count == 1;
+  readerConfig.triangulate =
+      options.triangulate && options.animation.count == 1;
   readerConfig.triangulation_method =
       options.animation.count == 1 ? "earcut" : "simple";
   readerConfig.mtl_search_path = basePath;

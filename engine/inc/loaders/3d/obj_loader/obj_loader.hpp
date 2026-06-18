@@ -12,6 +12,7 @@
 
 #include "../builder/mesh_builder_data.hpp"
 #include <string>
+#include <vector>
 #include "renderer/models/color.hpp"
 #include "loaders/3d/obj_loader/tiny_obj_loader.hpp"
 #include <memory.h>
@@ -26,6 +27,7 @@ struct ObjLoaderAnimationOptions {
 
 struct ObjLoaderOptions {
   bool flipUVs = false;
+  bool triangulate = false;
   float scale = 1.0F;
   ObjLoaderAnimationOptions animation;
 };
@@ -44,6 +46,14 @@ class ObjLoader {
   static std::unique_ptr<MeshBuilderData> load(const std::string& fullpath);
   static std::unique_ptr<MeshBuilderData> load(const std::string& fullpath,
                                                const ObjLoaderOptions& options);
+
+  static std::unique_ptr<MeshBuilderData> loadFromString(
+      const std::vector<std::string>& obj, const std::string& mtl,
+      const ObjLoaderOptions& options);
+
+  static std::unique_ptr<MeshBuilderData> loadFromString(
+      const std::string& obj, const std::string& mtl,
+      const ObjLoaderOptions& options);
 
  private:
   static void addOutputMaterialsAndFrames(
