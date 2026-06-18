@@ -1,0 +1,32 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
+{
+    "name": "Tyra",
+    //"image": "vinsonb/ps2dev:latest",
+    // Uncomment to test building from the Dockerfile in this folder instead of using the pre-built image.
+    "build": {
+        "context": "..",
+        "dockerfile": "../Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.makefile-tools",
+                "ms-vscode-remote.remote-wsl",
+                "ms-vscode.cpptools-extension-pack"
+            ],
+            "settings": {
+                "editor.formatOnSave": true
+            },
+            "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+            "[cpp]": {
+                "editor.defaultFormatter": "ms-vscode.cpptools",
+                "editor.formatOnSave": true
+            },
+            "[c]": {
+                "editor.defaultFormatter": "ms-vscode.cpptools",
+                "editor.formatOnSave": true
+            }
+        }
+    }
+}
